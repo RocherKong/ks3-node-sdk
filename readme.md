@@ -2,6 +2,8 @@
 
 本代码库为`金山云存储KS3`服务.主要提供`KS3 nodejs SDK`和`命令行工具`.
 
+[![Build Status](https://api.travis-ci.org/StoneRen/ks3-node-sdk.svg)](https://api.travis-ci.org/StoneRen/ks3-node-sdk.svg)
+
 ## Nodejs-sdk
 
 ### 安装
@@ -65,6 +67,7 @@ var client = new KS3(AK,SK);
 `ks3.object.upload_complete`  
 `ks3.object.upload_abort`  
 `ks3.object.upload_list_part`  
+`ks3.upload.start`
  
 
 
