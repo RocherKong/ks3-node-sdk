@@ -79,6 +79,14 @@ program.command('upload').description('上传文件或者文件夹').option("-p 
 	upload(options);
 });
 
+/**
+ * 下载文件,还不支持下载文件夹
+ */
+program.command('download').description('下载文件').option("-p --path [path]", "选择下载文件的存放地址").option("-b --bucket [bucket]", "下载文件所在的Bucket").option("-k --key [key]", "下载文件的名称").action(function(options) {
+	download(options);
+});
+
+
 program.version(KS3.version).usage('<command> [options]').parse(process.argv);
 if (!program.args.length) program.help();
 
@@ -310,6 +318,120 @@ function upload(options) {
 					if (err) throw err;
 
 					console.log(flag + '\n  上传完毕');
+				});
+			}
+		})
+	}
+
+}
+
+
+/**
+ * 下载
+ */
+function download(options) {
+	var stepPath = '    PATH: ';
+	var stepBucket = '    Bucket: ';
+	var stepKey = '    Key: ';
+	var akStr = nconf.get('AK') || '';
+	var skStr = nconf.get('SK') || '';
+	var filePath = options.path || '';
+	var bucketStr = options.bucket || '';
+	var keyStr = options.key || '';
+
+	if (akStr === '' || skStr === '') {
+		console.error('  还没有进行初始化设置,请先使用命令 `ks3 init` 进行初始化');
+		process.exit(0);
+	}
+
+	if (!filePath) {
+		console.log('    请输入下载文件存放的地址')
+		promptly.prompt(stepPath, function(err, filePath) {
+			if (err) {
+				console.error(err);
+				return err.retry()
+			} else {
+				nconf.set('PATH', filePath);
+				nconf.save();
+				download({
+					path: filePath
+				});
+			}
+		});
+		if ( !! nconf.get('PATH')) {
+			process.stdin.emit('data', nconf.get('PATH'));
+		}
+	} else {
+		async.series([function(callback) {
+			if (!bucketStr) {
+				console.log('    请输入要下载文件所在的Bucket:  ')
+				promptly.prompt(stepBucket, {
+					validator: check.bucketName
+				},
+				function(err, bucket) {
+					if (err) {
+						console.error(err);
+						return err.retry()
+					} else {
+						nconf.set('BUCKET', bucket);
+						nconf.save();
+						callback(null, bucket);
+					}
+				});
+				if ( !! nconf.get('BUCKET')) {
+					process.stdin.emit('data', nconf.get('BUCKET'));
+				}
+			} else {
+				callback(null, bucketStr);
+			}
+		},
+		function(callback) {
+			if (!keyStr) {
+				console.log('    请输入要下载文件的名称:  ')
+				promptly.prompt(stepKey, {
+					validator: check.key
+				},
+				function(err, key) {
+					if (err) {
+						console.error(err);
+						return err.retry()
+					} else {
+						nconf.set('KEY', key);
+						nconf.save();
+						callback(null, key);
+					}
+				});
+
+				if ( !! nconf.get('KEY')) {
+					process.stdin.emit('data', nconf.get('KEY'));
+				}
+			} else {
+				callback(null, keyStr);
+			}
+		}], function(err, results) {
+			if (err) {
+				throw err;
+			} else {
+				var flag = "----------------------------";
+				var bucket = results[0];
+				var key = results[1];
+				nconf.set('BUCKET', bucket);
+				nconf.save();
+
+				console.log('    开始下载');
+				console.log(flag);
+				var client = new KS3(akStr, skStr, bucket);
+				filePath = filePath.replace(/(\\\s)/ig, ' ');
+
+				client.download.start({
+					Bucket: bucket,
+					filePath: filePath,
+					Key: key
+				},
+				function(err, data, res) {
+					if (err) throw err;
+
+					console.log(flag + '\n  下载完毕');
 				});
 			}
 		})
