@@ -11,6 +11,7 @@ var bigFile = process.env.BIGFILE || path.join(__dirname, './assets/风之万里
 var updir = process.env.UPDIR || path.join(__dirname, './assets/updir/');
 
 
+
 describe('upload a file', function() {
 	it('upload a object with file content', function(done) {
 		var client = new KS3(ak, sk, bucketName);
@@ -33,6 +34,8 @@ describe('upload a file', function() {
 		});
 	});
 });
+
+
 
 describe('upload a directory', function() {
 	it('upload a directory without subdirectory', function(done) {
@@ -78,6 +81,5 @@ describe('upload a directory', function() {
 			done();
 		});
 	});
-
 });
 

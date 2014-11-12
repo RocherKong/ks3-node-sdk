@@ -26,6 +26,7 @@ describe('KS3 init', function() {
 		client.should.have.property('bucket');
 		client.should.have.property('object');
 		client.should.have.property('upload');
+		client.should.have.property('download');
 	});
 });
 
