@@ -89,6 +89,40 @@ describe('API Object', function() {
 					});
 				});
 			});
+			it('upload a object with file content && get a object', function(done) {
+				var client = new KS3(ak, sk, bucketName);
+				var fileName = 'photo.jpg';
+				var filePath = path.join(__dirname,'./assets/'+fileName);
+				var key = 'test_upload_'+fileName;
+				client.object.put({
+					Bucket: bucketName,
+					Key: key,
+					filePath:filePath
+				},
+				function(err, data, res) {
+					client.object.get({
+						Bucket:bucketName,
+						Key:key
+					},function(err,data,res,originData){
+						var newFileName = path.join(__dirname,'assets/test_object_get_download_'+fileName);
+						fs.writeFileSync(newFileName,originData);
+						done();
+					});
+				});
+			});
+			it('get a not exists file', function(done) {
+				var client = new KS3(ak, sk, bucketName);
+				var key = 'file_no_exist.jpg';
+				client.object.get({
+					Bucket:bucketName,
+					Key:key
+				},function(err,data,res){
+					should.exist(err);
+					err.code.should.equal(404);
+					res.statusCode.should.equal(404);
+					done();
+				});
+			});
 			it('upload a object with file content', function(done) {
 				var client = new KS3(ak, sk, bucketName);
 				var filePath = path.join(__dirname, './assets/test_upload_file.txt');

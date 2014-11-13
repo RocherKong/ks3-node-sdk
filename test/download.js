@@ -11,8 +11,9 @@ var bucketName = process.env.BUCKET || 'ks3-sdk-test';
 describe('download', function() {
 	it('should download a file', function(done) {
 		var client = new KS3(ak, sk, bucketName);
-		var filePath = path.join(__dirname, './assets/test_upload_photo.jpg');
-		var key = 'test_upload_photo.jpg';
+		var key = 'photo.jpg';
+		var key = '风之万里,黎明之空.txt';
+		var filePath = path.join(__dirname, './assets/'+key);
 
 		client.object.put({
 			filePath: filePath,
@@ -22,12 +23,25 @@ describe('download', function() {
 			if (err) throw err;
 			client.download.start({
 				Key: key,
-				filePath: path.join(__dirname, './assets/test_download_photo.jpg')
+				filePath: path.join(__dirname, './assets/test_download_'+key)
 			},
 			function(err, data, res) {
 				if (err) throw err;
+				should.not.exist(err);
 				done();
 			});
+		});
+	});
+	it('should download a no exist file', function(done) {
+		var client = new KS3(ak, sk, bucketName);
+		var key = 'file_no_exist.jpg';
+		client.download.start({
+			Key: key,
+			filePath: path.join(__dirname, './assets/test_download_'+key)
+		},function(err,data,res){
+			should.exist(err);
+			err.code.should.equal(404);
+			done();
 		});
 	})
 });
