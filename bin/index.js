@@ -176,6 +176,7 @@ function init(options) {
 		}
 	}], function(err, results) {
 		if (err) {
+			console.log(err);
 			throw err;
 		} else {
 			var ak = results[0];
@@ -292,6 +293,7 @@ function upload(options) {
 			}
 		}], function(err, results) {
 			if (err) {
+				console.log(err);
 				throw err;
 			} else {
 				var flag = "----------------------------";
@@ -315,7 +317,10 @@ function upload(options) {
 					}
 				},
 				function(err, data, res) {
-					if (err) throw err;
+					if (err) {
+						console.log(err);
+						throw err;
+					}
 
 					console.log(flag + '\n  上传完毕');
 				});
@@ -429,7 +434,10 @@ function download(options) {
 					Key: key
 				},
 				function(err, data, res) {
-					if (err) throw err;
+					if (err){
+						console.log(err)
+						throw err;
+					}
 
 					console.log(flag + '\n  下载完毕');
 				});
