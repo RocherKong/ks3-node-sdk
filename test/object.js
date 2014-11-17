@@ -3,6 +3,7 @@ var should = require('should');
 require('should-http');
 var path = require('path');
 var _dataType = require('./../config').dataType;
+var fs = require('fs');
 
 var ak = process.env.AK || 'WRHLHOZQD3OY3VTROMGQ';
 var sk = process.env.SK || 'dWSmyMmVcpahaZphUdyVz11myMIoCAsOKeZ6wi4T';
@@ -77,10 +78,49 @@ describe('API Object', function() {
 					Body: buf
 				},
 				function(err, data, res) {
-					should.not.exist(err);
-					res.should.have.status(200);
+					client.object.get({
+						Bucket:bucketName,
+						Key:key
+					},function(err,data,res){
+						var fileName = path.join(__dirname,'assets/test_download_file.txt');
+						data.should.have.length(11);
+						fs.writeFileSync(fileName,data);
+						done();
+					});
+				});
+			});
+			it('upload a object with file content && get a object', function(done) {
+				var client = new KS3(ak, sk, bucketName);
+				var fileName = 'photo.jpg';
+				var filePath = path.join(__dirname,'./assets/'+fileName);
+				var key = 'test_upload_'+fileName;
+				client.object.put({
+					Bucket: bucketName,
+					Key: key,
+					filePath:filePath
+				},
+				function(err, data, res) {
+					client.object.get({
+						Bucket:bucketName,
+						Key:key
+					},function(err,data,res,originData){
+						var newFileName = path.join(__dirname,'assets/test_object_get_download_'+fileName);
+						fs.writeFileSync(newFileName,originData);
+						done();
+					});
+				});
+			});
+			it('get a not exists file', function(done) {
+				var client = new KS3(ak, sk, bucketName);
+				var key = 'file_no_exist.jpg';
+				client.object.get({
+					Bucket:bucketName,
+					Key:key
+				},function(err,data,res){
+					should.exist(err);
+					err.code.should.equal(404);
+					res.statusCode.should.equal(404);
 					done();
-
 				});
 			});
 			it('upload a object with file content', function(done) {
@@ -278,6 +318,7 @@ describe('API Object', function() {
 
 		});
 	});
+
 	describe('all of object process', function() {
 		var content = 'Hello world';
 		var key = 'test_upload.txt';
@@ -306,7 +347,7 @@ describe('API Object', function() {
 		});
 		// HEAD object
 		it('should be return a 200 statuscode width head object', function(done) {
-			client.object.headObject({
+			client.object.head({
 				Key: key
 			},
 			function(err, data, res) {
