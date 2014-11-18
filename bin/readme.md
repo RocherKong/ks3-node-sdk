@@ -11,19 +11,19 @@
 
 - 稳定版安装   
 
-```
-npm install -g ks3
-```
+	```
+	npm install -g ks3
+	```
 - 最新版安装
 
-```
-git clone $gitpath --depth=1
-npm install -g ./ks3-node-sdk
-```
+	```
+	git clone $gitpath --depth=1
+	npm install -g ./ks3-node-sdk
+	```
 
 ## 命令解释
 
-- ks3 reset   
+### ks3 reset   
 重置开发者配置,清空历史记录
 
 ```
@@ -31,7 +31,7 @@ ks3 reset
 ```
 
 
-- ks3 init   
+### ks3 init   
 主要执行初始化操作.在初始化过程中,可以指定开发者的`AK`和`SK`.    
 命令行使用分为两种模式: 直接指定,或者进入交互模式.在`交互模式`下,会指导你填写必须的参数.如果所需参数没有提供完全,也会进入`交互模式`.
 
@@ -45,14 +45,14 @@ ks3 init -a [ak] -s [sk] -b [bucket]
 
 也可以直接输入`ks3 init`进入交互模式
 
-- ks3 upload   
+### ks3 upload   
 上传文件以及文件夹.程序会根据文件大小进行`简单上传`和`分块上传`.
 
 ```
 ks3 upload -p [path] -b [bucket] -k [key] --withsubdir
 ```
 `-p --path` : 开发者制定要上传文件夹或者文件的地址   
-`-b --bucket` : 制定上传文件存储的bucket   
+`-b --bucket` : 指定上传文件存储的bucket   
 `-k --key` : 如果上传的path为文件,则为文件名,如果上传的path是文件夹,则为文件夹名称   
 `--withsubdir` : 在上传文件夹的过程中,是否上传子文件夹,默认不上传,加上本参数,上传子文件夹内容   
 
@@ -77,7 +77,32 @@ ks3 upload -p [path] -b [bucket] -k [key] --withsubdir
 	// 进入交互模式 填写bucket和key
 	```
 
-也可以直接输入`ks3 upload`进入交互模式
+	也可以直接输入`ks3 upload`进入交互模式
+
+### ks3 download
+
+下载金山云存储的文件,可以进行断点续传.现在暂时只能下载文件,不能下载文件夹
+
+```
+ks3 download -b $bucket -k $key -p $localpath
+```
+	
+`-b --bucket` : 指定下载文件所在的bucket   
+`-k --key` : 指定下载文件对应的key,**注意,key不包含bucket名称**   
+`-p --path` : 下载文件的本地存储地址
+
+例如:
+
+1. 把`ks3-sdk-test` bucket下的 `test_download.txt` 下载到本地 `D盘` 根目录下,并且重命名为`test.txt`
+
+	```
+	ks3 download -k test_download.txt -p d:\test.txt
+	// 由于没有输入bucket名称,会进入交互模式,让你输入bucket名称
+	
+	// 或者直接指定bucket名称
+	ks3 download -b ks3-sdk-test -k test_download.txt -p d:\test.txt
+	```
+
 
 ## 帮助说明
 

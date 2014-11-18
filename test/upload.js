@@ -33,6 +33,27 @@ describe('upload a file', function() {
 			done();
 		});
 	});
+
+	it('upload a file and set content-type', function(done) {
+		var client = new KS3(ak, sk, bucketName);
+		var filePath = path.join(__dirname, './assets/test_content_type.html');
+		var fileName = (function(){
+			var s = filePath.split('/');
+			return s[s.length-1];
+		})();
+		var key = 'test_upload_file_from_upload_and_set_content_type_'+fileName;
+
+		client.upload.start({
+			Bucket: bucketName,
+			filePath: filePath,
+			Key: key
+		},
+		function(err, data, res) {
+			should.not.exist(err);
+			res.should.have.status(200);
+			done();
+		});
+	});
 });
 
 

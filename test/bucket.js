@@ -83,14 +83,7 @@ describe('API bucket', function() {
 				});
 			});	
 		});
-		describe('bucket name is null', function() {
-			var client = new KS3(ak, sk);
-			it('return a error', function() {
-				(function(){
-					client.bucket.getACL(function(err, data, res){})
-				}).should.throw('require the bucketName');
-			})
-		});
+		
 		describe('list objects', function() {
 			it('get objects with havent params', function(done) {
 				client.bucket.get(function(err, data, res) {
@@ -101,11 +94,10 @@ describe('API bucket', function() {
 			});
 			it('get objects with params', function(done) {
 				client.bucket.get({
-					'max-keys': 30,
+				    'max-keys': 30,
 				    delimiter: '',
 				    marker: '',
-				    prefix: '',
-				    'encoding-type': 'url'
+				    prefix: ''
 				}, function(err, data, res) {
 					should.not.exist(err);
 					res.should.have.status(200);
@@ -121,7 +113,15 @@ describe('API bucket', function() {
 					done();
 				});
 			});
-		})
+		});
+		describe('bucket name is null', function() {
+			var client = new KS3(ak, sk);
+			it('return a error', function() {
+				(function(){
+					client.bucket.getACL(function(err, data, res){})
+				}).should.throw('require the bucketName');
+			})
+		});
 	});
 		
 });

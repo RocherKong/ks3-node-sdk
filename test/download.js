@@ -14,6 +14,8 @@ describe('download', function() {
 		var key = 'photo.jpg';
 		var key = '风之万里,黎明之空.txt';
 		var filePath = path.join(__dirname, './assets/'+key);
+		var downFilePath = path.join(__dirname, './assets/test_download_'+key);
+		var upFileStat = fs.statSync(filePath);
 
 		client.object.put({
 			filePath: filePath,
@@ -23,10 +25,12 @@ describe('download', function() {
 			if (err) throw err;
 			client.download.start({
 				Key: key,
-				filePath: path.join(__dirname, './assets/test_download_'+key)
+				filePath: downFilePath
 			},
 			function(err, data, res) {
 				if (err) throw err;
+				var downFileStat = fs.statSync(downFilePath);
+				(downFileStat.size).should.equal(upFileStat.size);
 				should.not.exist(err);
 				done();
 			});

@@ -94,18 +94,24 @@ describe('API Object', function() {
 				var fileName = 'photo.jpg';
 				var filePath = path.join(__dirname,'./assets/'+fileName);
 				var key = 'test_upload_'+fileName;
+				var upFileStat = fs.statSync(filePath);
+
 				client.object.put({
 					Bucket: bucketName,
 					Key: key,
 					filePath:filePath
 				},
 				function(err, data, res) {
+					should.not.exist(err);
 					client.object.get({
 						Bucket:bucketName,
 						Key:key
 					},function(err,data,res,originData){
+						should.not.exist(err);
 						var newFileName = path.join(__dirname,'assets/test_object_get_download_'+fileName);
 						fs.writeFileSync(newFileName,originData);
+						var downFileStat = fs.statSync(filePath);
+						(downFileStat.size).should.equal(upFileStat.size);
 						done();
 					});
 				});
