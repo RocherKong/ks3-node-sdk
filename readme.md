@@ -46,6 +46,8 @@ var client = new KS3(AK,SK);
 
 ### api
 
+以下调用详细信息,可以访问[官方文档](http://ks3.ksyun.com/doc/api/index.html)
+
 `ks3.service.get` : 可以通过该操作来列出客户所有的 Bucket 信息   
 
 `ks3.bucket.put` : 创建一个新的Bucket   
@@ -70,6 +72,8 @@ var client = new KS3(AK,SK);
 `ks3.object.upload_list_part` : 罗列出已经上传的块  
 `ks3.upload.start` : 文件(文件夹)上传
  
+
+### 具体事例
 
 
 

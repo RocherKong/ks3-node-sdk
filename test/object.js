@@ -261,7 +261,7 @@ describe('API Object', function() {
 			});
 		});
 
-		it('aborts a multipart upload1', function(done) {
+		it('aborts a multipart upload', function(done) {
 			var client = new KS3(ak, sk, bucketName);
 			client.config({
 				dataType: 'json'
