@@ -73,12 +73,11 @@ var client = new KS3(AK,SK);
 `ks3.upload.start` : 文件(文件夹)上传
  
 
-### 具体事例
 
 
 
-
-## KS3   
+## KS3 
+  
 关于命令行工具,文档请查看 `./bin/readme.md`,或者[查看这里](https://github.com/StoneRen/ks3-node-sdk/tree/master/bin#user-content-ks3-命令行文档)
 
 功能包括上传文件和文件夹.上传过程中会根据文件大小进行简单上传和分块上传

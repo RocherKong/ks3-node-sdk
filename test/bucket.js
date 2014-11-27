@@ -52,7 +52,7 @@ describe('API bucket', function() {
 					
 				});
 			});
-			it('Put ACL havent params', function() {
+			it('Put ACL without params', function() {
 				(function() {
 					client.bucket.putACL(function(err, data, res) {});
 				}).should.throw('require the acl')
@@ -85,7 +85,7 @@ describe('API bucket', function() {
 		});
 		
 		describe('list objects', function() {
-			it('get objects with havent params', function(done) {
+			it('get objects without params', function(done) {
 				client.bucket.get(function(err, data, res) {
 					should.not.exist(err);
 					res.should.have.status(200);
@@ -95,7 +95,23 @@ describe('API bucket', function() {
 			it('get objects with params', function(done) {
 				client.bucket.get({
 				    'max-keys': 30,
-				    delimiter: '',
+				    marker: '',
+				    prefix: ''
+				}, function(err, data, res) {
+					should.not.exist(err);
+					res.should.have.status(200);
+					done();
+				});
+			});
+
+			/**
+			 * 禁止传递空值 delimiter,
+			 * sdk会做处理
+			 */
+			it('get objects with empty delimiter', function(done) {
+				client.bucket.get({
+				    'max-keys': 30,
+				    delimiter:'',
 				    marker: '',
 				    prefix: ''
 				}, function(err, data, res) {
